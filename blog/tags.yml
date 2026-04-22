@@ -1,0 +1,14 @@
+osh:
+  label: Osh Game Lab
+  permalink: /osh-game-lab
+  description: Posts about Osh Game Lab — a local game dev community in Osh
+
+events:
+  label: Events
+  permalink: /events
+  description: Meetups, game jams, and other community events
+
+gamedev:
+  label: Game Dev
+  permalink: /gamedev
+  description: Everything about game development
