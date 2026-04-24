@@ -9,7 +9,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
-const config = {
+const config = {  
   title: 'ehh',
   tagline: 'ehhh',
   favicon: 'img/favicon.ico',
@@ -45,6 +45,7 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        
         docs: {
           sidebarPath: './sidebars.js',
           routeBasePath: 'journey',
@@ -65,12 +66,16 @@ const config = {
         },
       }),
     ],
+    
   ],
+
+  
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
+      
       colorMode: {
         respectPrefersColorScheme: true,
       },

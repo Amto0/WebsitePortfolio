@@ -4,9 +4,87 @@ sidebar_position: 2
 
 # How it works
 
-*Test
 
-`testasdadsa
-Dasdadasdaasd
-Dasd`
-*
+:::note 
+I collaborated with Physics Olympiad medalist,Sayan Bakirov
+For matrix calculations i used Eigen
+:::
+To get all accelaration for all masses we used Lagrangian mechanics to simplify calculations.
+Using Euler-Lagrange equation we "remove" calculation of complex internal constraints forces and derive clean equations of motion.We solve EL equation only once
+and for every Update Tick app populates mass Matrix,M, and force vector,F .To get vector of all accelarations we used
+ a = [reverse matrix of M]*F.To get better accuracy was added RK4 Integration
+
+
+```
+  int      N = 0;
+	VectorXd m, l, cumM; //cumM -Cummative mass from i to N-1  
+ VectorXd state;      
+
+ void init(int n, const double* masses, const double* lengths, const double* thetas) 
+ {
+     N = n;
+     m = VectorXd(N);
+     l = VectorXd(N);
+     cumM = VectorXd(N);
+     state = VectorXd::Zero(2 * N);
+     for (int i = 0; i < N; ++i) 
+     {
+         m(i) = masses[i];
+         l(i) = lengths[i];
+         state(i) = thetas[i];
+     }
+     cumM(N - 1) = m(N - 1);
+     for (int i = N - 2; i >= 0; --i)
+     {
+         cumM(i) = cumM(i + 1) + m(i);
+     }
+        
+ }
+
+ VectorXd derivative(const VectorXd& y) const 
+ {
+     MatrixXd M(N, N);
+     VectorXd F(N);
+
+   
+     for (int i = 0; i < N; ++i)
+     {
+         for (int j = 0; j < N; ++j)
+         {
+             double coef = cumM(std::max(i, j));
+             if (i == j)
+             {
+                  M(i, j) = coef * l(i) * l(i);
+             }
+               
+             else
+             {
+                 M(i, j) = coef * l(i) * l(j) * std::cos(y(i) - y(j));
+             }
+                
+         }
+     }
+
+   
+     for (int i = 0; i < N; ++i)
+     {
+         double fi = 0.0;
+         for (int j = 0; j < N; ++j) 
+         {
+             if (j == i) continue;
+             double coef = cumM(std::max(i, j));
+             double wj = y(N + j);
+             fi -= coef * l(i) * l(j) * std::sin(y(i) - y(j)) * wj * wj;
+         }
+         fi -= cumM(i) * G_ACC * l(i) * std::sin(y(i));
+         F(i) = fi;
+     }
+
+     VectorXd alpha = M.ldlt().solve(F);
+
+     VectorXd dy(2 * N);
+     dy.head(N) = y.tail(N);   
+     dy.tail(N) = alpha;       
+     return dy;
+ }   
+ ```

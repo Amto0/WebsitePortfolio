@@ -4,9 +4,43 @@ sidebar_position: 2
 
 # How it works
 
-*Test
 
-`testasdadsa
-Dasdadasdaasd
-Dasd`
-*
+To get accelaration i used a = G*[Mass of object B] / R*R
+Also used Verlet Integration for better accuracy.
+:::note 
+Object B is the object to which object A gravitate(as comparison Earth is B and moon is A)
+:::
+```
+    float dx0 = BX - ax_pos;
+    float dy0 = BY - ay_pos;
+    float R0 = SDL_sqrtf(dx0 * dx0 + dy0 * dy0);
+
+    float a0x = 0, a0y = 0;
+    if (R0 > 1.0f)
+    {
+        float a0 = G * MB / (R0 * R0);
+        a0x = a0 * dx0 / R0;
+        a0y = a0 * dy0 / R0;
+    }
+
+    ax_pos += vx * dt + 0.5f * a0x * dt * dt;
+    ay_pos += vy * dt + 0.5f * a0y * dt * dt;
+
+
+    float dx1 = BX - ax_pos;
+    float dy1 = BY - ay_pos;
+    float R1 = SDL_sqrtf(dx1 * dx1 + dy1 * dy1);
+
+    float a1x = 0, a1y = 0;
+    if (R1 > 1.0f)
+    {
+        float a1 = G * MB / (R1 * R1);
+        a1x = a1 * dx1 / R1;
+        a1y = a1 * dy1 / R1;
+    }
+
+    vx += 0.5f * (a0x + a1x) * dt;
+    vy += 0.5f * (a0y + a1y) * dt;
+```
+
+Visualization was created in SDL3
